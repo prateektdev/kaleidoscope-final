@@ -1,20 +1,53 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Blank
+      Personal Form
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div>
+    <form (ngSubmit)="logForm()">
+      <ion-item>
+        <ion-label>Enter your name : </ion-label>
+        <ion-input type="text" [(ngModel)]="data.name" name="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Enter your program :</ion-label>
+        <ion-select [(ngModel)]="data.program" okText="Okay" name="program" cancelText="Dismiss">
+          <ion-select-option value="CPA">CPA</ion-select-option>
+          <ion-select-option value="CPD">CPD</ion-select-option>
+          <ion-select-option value="BSD">BSD</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+      <ion-item>
+        <ion-label>Enter your job : </ion-label>
+        <ion-input type="text" [(ngModel)]="data.job" *ngIf="data.job!=''" name="job" ></ion-input>
+
+      </ion-item>
+      <ion-searchbar class="searchbar" *ngIf="data.job==''" showCancelButton="always" value={{data.job}} (ionInput)="getItems($event)">
+      </ion-searchbar>
+      <!-- <ion-list>
+        <ion-item (click)="selectjob(job.title)" *ngFor="let job of items">
+          <ion-label >{{job.title}}</ion-label>
+        </ion-item>
+      </ion-list> -->
+      <ion-list>
+        <ion-item (click)="selectjob(job.suggestion)" *ngFor="let job of items">
+          <ion-label >{{job.suggestion}}</ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-item>
+        <ion-label>Select your country </ion-label>
+        <ion-input type="text" [(ngModel)]="data.country" *ngIf="data.country!='Select a country'" name="country" ></ion-input>
+        <ion-button  *ngIf="data.country=='Select a country'" (click)="showPicker()">
+         {{data.country}}
+        </ion-button>
+      </ion-item>
+      <ion-button type="submit" color="primary">Submit</ion-button>
+    </form>
+
   </div>
 </ion-content>

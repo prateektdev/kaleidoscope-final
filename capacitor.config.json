@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "myApp",
+  "appId": "com.assignment.first",
+  "appName": "assignment1",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
