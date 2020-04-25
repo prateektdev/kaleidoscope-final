@@ -96,18 +96,53 @@ export class KaleidoscopePage {
         var mode = ~~parameters.mode || 2;
       
         // Project changes in cursor (x, y) onto the image background position.
-        $kaleidescope.mousemove( function ( e ) {
-          x++;
-          y++;
+        // $kaleidescope.mouseover( function ( e ) {
+        //   x++;
+        //   y++;
+        //   console.log('mode : ',mode)
+        //   var nx = e.pageX, ny = e.pageY;
+        //   switch ( mode ) {
+        //     case 1:
+        //       nx = -x;
+        //       ny = e.pageY;
+        //       break;
+        //     case 2:
+        //       nx = e.pageX;
+        //       ny = -y;
+        //       break;
+        //     case 3:
+        //       nx = x;
+        //       ny = e.pageY;
+        //       break;
+        //     case 4:
+        //       nx = e.pageX;
+        //       ny = y;
+        //       break;
+        //     case 5:
+        //       nx = x;
+        //       ny = y;
+        //       break;
+        //   }
       
-          var nx = e.pageX, ny = e.pageY;
+        //   move( nx, ny );
+        //   auto = auto_throttle = false;
+        // }); 
+        $kaleidescope.bind('mousemove touchmove', function(e:any) {
+          x++;
+          y++; 
+          var nx:any = e.pageX, ny:any = e.pageY;
+          let touch = undefined
+          if (e.originalEvent.touches)
+            touch = e.originalEvent.touches[0]
+            nx = e.pageX || touch.pageX
+            ny = e.pageY || touch.pageY  
           switch ( mode ) {
             case 1:
               nx = -x;
               ny = e.pageY;
               break;
             case 2:
-              nx = e.pageX;
+              nx = e.pageX|| touch.pageX;
               ny = -y;
               break;
             case 3:
@@ -123,11 +158,9 @@ export class KaleidoscopePage {
               ny = y;
               break;
           }
-      
-          move( nx, ny );
+          move( parseInt(nx), parseInt(ny) );
           auto = auto_throttle = false;
-        });
-        
+      });
         // An alternate image can be supplied via Dragon Drop.
         if ( 'draggable' in document.createElement('b') && window.FileReader ) {
           k.ondragenter = k.ondragover = function( e ) {
@@ -189,8 +222,9 @@ export class KaleidoscopePage {
           if ( auto ) window.requestAnimFrame( animate );
         }
       
-        function move( x, y ) {
+        function move( x, y ) { 
           $image.css( 'background-position', [ x + "px", y + "px" ].join( ' ' ) );
+          console.log(x,y)
         }
       
         // Timer to check for inactivity
@@ -208,73 +242,5 @@ export class KaleidoscopePage {
       });
       
   }
-
-  selectjob(job) {
-    this.data.job = job;
-    this.items=[] ;
-    console.log('here')
-  }
-  initializeItems(val) {
-    var url = `http://api.dataatwork.org/v1/jobs/autocomplete?begins_with=${val}&contains=${val}&?ends_with=${val}`;
-    // var url = `http://api.dataatwork.org/v1/jobs`;
-    this.http.get(url).subscribe(data => {
-      console.log('data : ', data)
-      this.items = data;
-    })
-  }
-
-  async getCountriesData() {
-    var url = `https://restcountries.eu/rest/v2/all`;
-    await this.http.get(url).subscribe(data => {
-      console.log('data : ', data)
-      let countries:any = data ;
-      this.countries =[] ;
-      countries.forEach(element => {
-        this.countries.push({text:element.name,value:element.name})
-      });
-    }) 
-  }
-
-  getItems(ev) {
-    // set val to the value of the ev target
-    var val = ev.target.value;
-    this.initializeItems(val);
-  }
- async showPicker() {
-    let options: PickerOptions = {
-      buttons: [
-        {
-          text: "Cancel",
-          role: 'cancel'
-        },
-        {
-          text:'Ok',
-          handler:(value:any) => {
-            this.data.country=value.countries.value;
-            console.log(this.data)
-          }
-        }
-      ],
-      columns:[{
-        name:'countries',
-        options:this.countries
-      }]
-    };
-
-    let picker = await this.pickerController.create(options);
-    picker.present()
-  }
-
-  logForm = async () => {
-    this.storage.set('formData', JSON.stringify(this.data));
-    const alert = await this.alertCtrl.create({
-      header: `Thanks ${this.data.job}: ${this.data.name} for submitting your form`,
-      subHeader: `Your application for ${this.data.program} program will saved in our DB `,
-      buttons: ['OK']
-    });
-    alert.present();
-    this.storage.get('formData').then((val) => {
-      console.log('Your data is', JSON.parse(val));
-    });
-  }
+ 
 }
