@@ -24,6 +24,7 @@ var window: Window;
 })
 export class KaleidoscopePage {
   fullDisplay: boolean = true;
+  autoAnimate:boolean=false;
   constructor(
     public http: HttpClient,
     private alertCtrl: AlertController,
@@ -33,7 +34,7 @@ export class KaleidoscopePage {
     private storage: Storage
   ) {
     setTimeout(() => {
-      this.loadView(this.fullDisplay);
+      this.loadView(this.fullDisplay,this.autoAnimate);
     }, 1000);
   }
   async presentActionSheet() {
@@ -48,7 +49,7 @@ export class KaleidoscopePage {
             $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
             setTimeout(() => {
               this.fullDisplay=false;
-              this.loadView(false);
+              this.loadView(false,this.autoAnimate);
             }, 1000);
           },
         },
@@ -59,7 +60,29 @@ export class KaleidoscopePage {
             this.fullDisplay=true;
             $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
             setTimeout(() => {
-              this.loadView(true);
+              this.loadView(true,this.autoAnimate);
+            }, 1000);
+          },
+        },
+        {
+          text: "Auto Animation",
+          icon: "aperture-outline",
+          handler: () => {  
+            this.autoAnimate= true;
+            $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
+            setTimeout(() => {
+              this.loadView(this.fullDisplay,this.autoAnimate);
+            }, 1000);
+          },
+        },
+        {
+          text: "Finger Animate",
+          icon: "finger-print-outline",
+          handler: () => {  
+            this.autoAnimate= false;
+            $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
+            setTimeout(() => {
+              this.loadView(this.fullDisplay,this.autoAnimate);
             }, 1000);
           },
         },
@@ -68,7 +91,7 @@ export class KaleidoscopePage {
     actionSheet.present();
   }
 
-  loadView = (fullDisplay) => {
+  loadView = (fullDisplay,autoAnimate) => {
     $(document).ready(function () {
       var parameters: any = (function (src) {
         var params = {},
@@ -110,7 +133,7 @@ export class KaleidoscopePage {
         } else {
           for (var i = 0; i <= n * 2; i++) {
             tiles += [
-              `<div class="tile t`,
+              `<div class="tile-mandala tile t`,
               i,
               '"><div class="image"></div></div>',
             ].join("");
@@ -287,8 +310,8 @@ export class KaleidoscopePage {
       (function timer() {
         setTimeout(function () {
           timer();
-          if (auto && !auto_throttle) {
-            // animate();
+          if (autoAnimate) {
+            animate();
             auto_throttle = true;
           } else {
             auto = true;
