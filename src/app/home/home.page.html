@@ -1,53 +1,60 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title>
-      Personal Form
-    </ion-title>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Kaleidoscope-Under dev</ion-title>
+    
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div>
-    <form (ngSubmit)="logForm()">
-      <ion-item>
-        <ion-label>Enter your name : </ion-label>
-        <ion-input type="text" [(ngModel)]="data.name" name="name"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Enter your program :</ion-label>
-        <ion-select [(ngModel)]="data.program" okText="Okay" name="program" cancelText="Dismiss">
-          <ion-select-option value="CPA">CPA</ion-select-option>
-          <ion-select-option value="CPD">CPD</ion-select-option>
-          <ion-select-option value="BSD">BSD</ion-select-option>
-        </ion-select>
-      </ion-item>
+  <form>
+    <ion-item>
+      <ion-label>Mandala View</ion-label>
+      <ion-toggle (value)="settings.mandala"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Full screen View</ion-label>
+      <ion-toggle></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Auto animation</ion-label>
+      <ion-toggle></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Speed</ion-label>
+      <ion-range min="20" max="80" step="2">
+        <ion-icon size="small" slot="start" name="sunny"></ion-icon>
+        <ion-icon slot="end" name="sunny"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-label>Image</ion-label>
+      <ion-button (click)="save()" color="primary"
+        ><ion-icon size="small" slot="start" name="sunny"></ion-icon> Select
+        Image
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-label>Segments</ion-label>
+      <ion-grid>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="4" class="ion-align-self-center">
+            <ion-button color="medium" fill="clear" (click)="increaseSegment()">
+              <ion-icon name="remove-circle" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-col>
 
-      <ion-item>
-        <ion-label>Enter your job : </ion-label>
-        <ion-input type="text" [(ngModel)]="data.job" *ngIf="data.job!=''" name="job" ></ion-input>
+          <ion-col size="2" class="ion-align-self-center">
+            {{ "1" }}
+          </ion-col>
 
-      </ion-item>
-      <ion-searchbar class="searchbar" *ngIf="data.job==''" showCancelButton="always" value={{data.job}} (ionInput)="getItems($event)">
-      </ion-searchbar>
-      <!-- <ion-list>
-        <ion-item (click)="selectjob(job.title)" *ngFor="let job of items">
-          <ion-label >{{job.title}}</ion-label>
-        </ion-item>
-      </ion-list> -->
-      <ion-list>
-        <ion-item (click)="selectjob(job.suggestion)" *ngFor="let job of items">
-          <ion-label >{{job.suggestion}}</ion-label>
-        </ion-item>
-      </ion-list>
-      <ion-item>
-        <ion-label>Select your country </ion-label>
-        <ion-input type="text" [(ngModel)]="data.country" *ngIf="data.country!='Select a country'" name="country" ></ion-input>
-        <ion-button  *ngIf="data.country=='Select a country'" (click)="showPicker()">
-         {{data.country}}
-        </ion-button>
-      </ion-item>
-      <ion-button type="submit" color="primary">Submit</ion-button>
-    </form>
-
-  </div>
+          <ion-col size="2" class="ion-align-self-center">
+            <ion-button color="medium" fill="clear" (click)="decreaseSegment()">
+              <ion-icon name="add-circle" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-col> 
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-button (click)="save()" expand="full"   color="primary">Submit</ion-button>
+  </form>
 </ion-content>

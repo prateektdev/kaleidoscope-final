@@ -4,7 +4,6 @@ import { NavParams,ModalController } from '@ionic/angular';
 import { Storage } from "@ionic/storage";  
 
 @Component({
-  selector: "app-settings",
   templateUrl: "settings.page.html",
   styleUrls: ["settings.page.scss"],
 })

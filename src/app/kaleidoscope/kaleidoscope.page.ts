@@ -5,6 +5,7 @@ import {
   LoadingController,
   ToastController,
   ModalController,
+  NavController,
   ActionSheetController,
 } from "@ionic/angular";
 import { FileChooser } from "@ionic-native/file-chooser/ngx";
@@ -41,6 +42,7 @@ export class KaleidoscopePage {
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     private fileChooser: FileChooser,
+    private navCtrl: NavController,
     private storage: Storage,
     private camera: Camera,
     private file: File,
@@ -52,14 +54,15 @@ export class KaleidoscopePage {
   }
 
   async presentModal() {
-    const modal = await this.modalController.create({
-      component: SettingsPage,
-    });
-    modal.onDidDismiss().then((data) => {
-      console.log("here : ", data);
-      const settings = data["settings"]; // Here's your selected user!
-    });
-    return await modal.present();
+    const modal = await this.navCtrl.navigateForward("/home")
+    // ({
+    //   component: SettingsPage,
+    // });
+    // modal.onDidDismiss().then((data) => {
+    //   console.log("here : ", data);
+    //   const settings = data["settings"]; // Here's your selected user!
+    // });
+    // return await modal.present();
   }
 
   refreshApp = () => {
