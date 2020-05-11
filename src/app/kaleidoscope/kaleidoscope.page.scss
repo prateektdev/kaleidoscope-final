@@ -1,10 +1,13 @@
 .scopearea {
-    height: 70%;
+    height: 100%;
     width: 100%;
     padding:5%;
+	background-color: #111;
 }
 ion-content {
-    --overflow: hidden;
+	--overflow: hidden;
+	
+	background-color: #111;
 }
 body {
 	margin: 0;

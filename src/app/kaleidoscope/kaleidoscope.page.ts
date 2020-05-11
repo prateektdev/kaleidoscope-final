@@ -4,13 +4,18 @@ import {
   AlertController,
   LoadingController,
   ToastController,
-  PickerController,
+  ModalController,
   ActionSheetController,
 } from "@ionic/angular";
-import { PickerOptions } from "@ionic/core";
-
+import { FileChooser } from "@ionic-native/file-chooser/ngx";
 import { Storage } from "@ionic/storage";
 import * as $ from "jquery";
+import { SettingsPage } from "../settings/settings.page";
+import { Camera, CameraOptions } from "@ionic-native/camera/ngx";
+import { File, FileEntry } from "@ionic-native/file/ngx";
+import { Capacitor } from '@capacitor/core';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+
 interface Window {
   requestAnimationFrame: any;
   FileReader: any;
@@ -18,25 +23,99 @@ interface Window {
 }
 var window: Window;
 @Component({
-  selector: "app-home",
+  selector: "app-kaleidoscope",
   templateUrl: "kaleidoscope.page.html",
   styleUrls: ["kaleidoscope.page.scss"],
 })
 export class KaleidoscopePage {
-  fullDisplay: boolean = true;
-  autoAnimate:boolean=false;
+  fullDisplay: boolean = false;
+  autoAnimate: boolean = false;
+  currentSpeed: number = 3;
+  currentSegment: number = 3;
+  currentImage: string = "assets/img/effect9.jpeg";
+
   constructor(
     public http: HttpClient,
-    private alertCtrl: AlertController,
+    public modalController: ModalController,
     public actionSheetCtrl: ActionSheetController,
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
-    private storage: Storage
+    private fileChooser: FileChooser,
+    private storage: Storage,
+    private camera: Camera,
+    private file: File,
+    private webview: WebView
   ) {
     setTimeout(() => {
-      this.loadView(this.fullDisplay,this.autoAnimate);
+      this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
     }, 1000);
   }
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: SettingsPage,
+    });
+    modal.onDidDismiss().then((data) => {
+      console.log("here : ", data);
+      const settings = data["settings"]; // Here's your selected user!
+    });
+    return await modal.present();
+  }
+
+  refreshApp = () => {
+    $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
+  };
+
+  showInFullScreen = (fullScreenEnable: boolean) => {
+    this.refreshApp();
+    setTimeout(() => {
+      this.fullDisplay = fullScreenEnable;
+      this.loadView(fullScreenEnable, this.autoAnimate, this.currentImage);
+    }, 1000);
+  };
+
+  enableAutoAnimation = (autoEnable: boolean) => {
+    this.refreshApp();
+    setTimeout(() => {
+      this.autoAnimate = autoEnable;
+      this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
+    }, 1000);
+  };
+
+  chaneSpeed = (speed: number) => {
+    this.refreshApp();
+    setTimeout(() => {
+      this.currentSpeed = speed;
+      this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
+    }, 1000);
+  };
+
+  changeImage = () => {
+    this.refreshApp();
+    setTimeout(() => {
+      // this.fileChooser
+      //   .open()
+      //   .then(async (uri) => {
+      //     console.log(uri);
+      //     // let alert = await this.toastCtrl.create({
+      //     //   message: "URI : "+uri,
+      //     //   duration: 3000,
+      //     //   position: "top",
+      //     // });
+      //     // alert.present();
+      //     if (uri.substring(0, 21) == "content://com.android") {
+      //       let photo_split = uri.split("%3A");
+      //       uri = "content://media/external/images/media/" + photo_split[1];
+      //     }
+      //     this.currentImage = "data:image/jpeg;base64," + uri;
+      //     console.log(this.currentImage);
+      //     this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
+      //   })
+      //   .catch((e) => console.log(e));
+      this.selectImage();
+    }, 1000);
+  };
+
   async presentActionSheet() {
     const actionSheet = await this.actionSheetCtrl.create({
       header: "View",
@@ -45,45 +124,36 @@ export class KaleidoscopePage {
           text: "Mandala",
           role: "destructive",
           icon: "heart",
-          handler: () => { 
-            $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
-            setTimeout(() => {
-              this.fullDisplay=false;
-              this.loadView(false,this.autoAnimate);
-            }, 1000);
+          handler: () => {
+            this.showInFullScreen(false);
           },
         },
         {
           text: "Full screen",
           icon: "share",
-          handler: () => { 
-            this.fullDisplay=true;
-            $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
-            setTimeout(() => {
-              this.loadView(true,this.autoAnimate);
-            }, 1000);
+          handler: () => {
+            this.showInFullScreen(true);
           },
         },
         {
           text: "Auto Animation",
           icon: "aperture-outline",
-          handler: () => {  
-            this.autoAnimate= true;
-            $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
-            setTimeout(() => {
-              this.loadView(this.fullDisplay,this.autoAnimate);
-            }, 1000);
+          handler: () => {
+            this.enableAutoAnimation(true);
           },
         },
         {
           text: "Finger Animate",
           icon: "finger-print-outline",
-          handler: () => {  
-            this.autoAnimate= false;
-            $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
-            setTimeout(() => {
-              this.loadView(this.fullDisplay,this.autoAnimate);
-            }, 1000);
+          handler: () => {
+            this.enableAutoAnimation(false);
+          },
+        },
+        {
+          text: "Change Image",
+          icon: "image-outline",
+          handler: () => {
+            this.changeImage();
           },
         },
       ],
@@ -91,7 +161,66 @@ export class KaleidoscopePage {
     actionSheet.present();
   }
 
-  loadView = (fullDisplay,autoAnimate) => {
+  pickImage(sourceType) {
+    const options: CameraOptions = {
+      quality: 100,
+      sourceType: sourceType,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+    };
+    this.camera.getPicture(options).then(
+      (imageData) => {
+        // imageData is either a base64 encoded string or a file URI
+        // If it's base64 (DATA_URL):
+        // let base64Image = 'data:image/jpeg;base64,' + imageData;
+        // this.cropImage(imageData);
+        this.file
+          .resolveLocalFilesystemUrl(imageData)
+          .then((entry: FileEntry) => {
+            entry.file((file) => {
+              console.log(file);
+              this.currentImage = this.webview.convertFileSrc(imageData);
+              console.log(this.currentImage);
+              this.loadView(
+                this.fullDisplay,
+                this.autoAnimate,
+                this.currentImage
+              );
+            });
+          });
+      },
+      (err) => {
+        // Handle error
+      }
+    );
+  }
+  async selectImage() {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: "Select Image source",
+      buttons: [
+        {
+          text: "Load from Library",
+          handler: () => {
+            this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY);
+          },
+        },
+        {
+          text: "Use Camera",
+          handler: () => {
+            this.pickImage(this.camera.PictureSourceType.CAMERA);
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+    });
+    await actionSheet.present();
+  }
+
+  loadView = (fullDisplay, autoAnimate, currentImage) => {
     $(document).ready(function () {
       var parameters: any = (function (src) {
         var params = {},
@@ -115,14 +244,14 @@ export class KaleidoscopePage {
       var auto_throttle;
 
       // PARAMETER: *s* is the speed of the automatic timeout animation.
-      var s = parameters.s || 3;
+      var s = parameters.s || 1;
 
       // PARAMETER: *n* is the number of segments.
       var n = ~~parameters.n || 7;
       var tiles = "";
       if (n) {
-        console.log('this.fullDisplay : ',fullDisplay)
-        if (fullDisplay==true) {
+        console.log("this.fullDisplay : ", fullDisplay);
+        if (fullDisplay == true) {
           for (var i = 0; i <= n * 2; i++) {
             tiles += [
               `<div class="tile-full tile t`,
@@ -151,13 +280,16 @@ export class KaleidoscopePage {
       var k = $kaleidescope[0];
 
       // PARAMETER: *src* is the URL for an alternate image.
-      var src = parameters.src;
+      var src = currentImage;
       if (src) {
-        $image.css(
-          "background-image",
-          ["url(", decodeURIComponent(src), ")"].join("")
-        );
+        $image.css("background-image", ["url(", src, ")"].join(""));
       }
+      // else{
+      //   $image.css(
+      //     "background-image",
+      //     ["url(", decodeURIComponent(src), ")"].join("")
+      //   );
+      // }
 
       // PARAMETER: *clean* hides the Github and fullscreen links.
       var clean = parameters.clean;
@@ -316,7 +448,7 @@ export class KaleidoscopePage {
           } else {
             auto = true;
           }
-        }, 50);
+        }, 100);
       })();
     });
   };

@@ -1,14 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Kaleidoscope-Under dev</ion-title>
-    <!-- <ion-buttons slot="start">
+    <ion-buttons (click)="presentActionSheet()" slot="start">
       <ion-menu-button autoHide="false"></ion-menu-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-button class="optionsButton" (click)="presentActionSheet()">Show Options</ion-button>
+<ion-content> 
   <div class="scopearea">
   <div class="kaleidoscope">
   </div>

@@ -15,25 +15,49 @@ body {
 	height: 100vh;
 }
 .tile-full {
-	height: 60vh !important;
-	width: 50vh !important;
+	height: 150vh !important;
+	width: 100vh !important;
 	/* left:-10 !important; */
 	right:50%;
 }
 .tile-mandala {
-	height: 30% !important;
-	width: 30% !important;
-	left: 20% !important; 
+	width: 41vw !important; 
+    height: 41vw !important; 
+    max-height: 41vh !important;
+    max-width: 41vh !important;
+	left: 10% !important; 
 }
 
+@media screen and (min-device-width: 220px) and (max-device-width: 320px) { 
+    .tile-mandala {
+		
+		left: 9% !important; 
+	}
+}
+@media screen and (min-device-width: 320px) and (max-device-width: 540px) { 
+    .tile-mandala {
+		
+		left: 10% !important; 
+	}
+}
+@media screen and (min-device-width: 540px) and (max-device-width: 640px) { 
+    .tile-mandala {
+		
+		left: 25% !important; 
+	}
+}
+@media screen and (min-device-width: 640px) { 
+    .tile-mandala {
+		
+		left: 35% !important; 
+	}
+}
 .kaleidoscope .tile {
 	display: none;
 	position: absolute;
 	top: 50%; 
 	z-index: 0;
 	overflow: hidden;
-	height: 30%;
-	width: 30%;
 	-webkit-transform-origin: right top;
 	-moz-transform-origin: right top;
 	-ms-transform-origin: right top;
