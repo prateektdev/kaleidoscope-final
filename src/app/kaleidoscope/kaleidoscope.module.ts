@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { KaleidoscopePage } from './kaleidoscope.page'; 
+import { KaleidoscopePage } from './kaleidoscope.page';
 
 @NgModule({
   imports: [
@@ -19,4 +19,4 @@ import { KaleidoscopePage } from './kaleidoscope.page';
   ],
   declarations: [KaleidoscopePage]
 })
-export class KaleidoscopePageModule {}
+export class KaleidoscopePageModule { }

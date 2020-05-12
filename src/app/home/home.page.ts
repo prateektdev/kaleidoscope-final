@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlertController, LoadingController, ToastController,PickerController, } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, PickerController, } from '@ionic/angular';
 import { PickerOptions } from "@ionic/core";
 import { Storage } from '@ionic/storage';
 
@@ -12,11 +12,11 @@ import { Storage } from '@ionic/storage';
 export class HomePage {
   data: any = {
     title: '',
-    job:'',
-    country:'Select a country'
+    job: '',
+    country: 'Select a country'
   };
   items: any;
-  countries:any;
+  countries: any;
   constructor(
     public http: HttpClient,
     private alertCtrl: AlertController,
@@ -24,12 +24,12 @@ export class HomePage {
     public toastCtrl: ToastController,
     private pickerController: PickerController,
     private storage: Storage) {
-      this.getCountriesData();
+    this.getCountriesData();
   }
 
   selectjob(job) {
     this.data.job = job;
-    this.items=[] ;
+    this.items = [];
     console.log('here')
   }
   initializeItems(val) {
@@ -45,12 +45,12 @@ export class HomePage {
     var url = `https://restcountries.eu/rest/v2/all`;
     await this.http.get(url).subscribe(data => {
       console.log('data : ', data)
-      let countries:any = data ;
-      this.countries =[] ;
+      let countries: any = data;
+      this.countries = [];
       countries.forEach(element => {
-        this.countries.push({text:element.name,value:element.name})
+        this.countries.push({ text: element.name, value: element.name })
       });
-    }) 
+    })
   }
 
   getItems(ev) {
@@ -58,7 +58,7 @@ export class HomePage {
     var val = ev.target.value;
     this.initializeItems(val);
   }
- async showPicker() {
+  async showPicker() {
     let options: PickerOptions = {
       buttons: [
         {
@@ -66,16 +66,16 @@ export class HomePage {
           role: 'cancel'
         },
         {
-          text:'Ok',
-          handler:(value:any) => {
-            this.data.country=value.countries.value;
+          text: 'Ok',
+          handler: (value: any) => {
+            this.data.country = value.countries.value;
             console.log(this.data)
           }
         }
       ],
-      columns:[{
-        name:'countries',
-        options:this.countries
+      columns: [{
+        name: 'countries',
+        options: this.countries
       }]
     };
 

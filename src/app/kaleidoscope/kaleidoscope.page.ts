@@ -16,6 +16,8 @@ import { Camera, CameraOptions } from "@ionic-native/camera/ngx";
 import { File, FileEntry } from "@ionic-native/file/ngx";
 import { Capacitor } from '@capacitor/core';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { HomePage } from '../home/home.page';
+import { GlobalService } from '../service/global.service';
 
 interface Window {
   requestAnimationFrame: any;
@@ -46,14 +48,18 @@ export class KaleidoscopePage {
     private storage: Storage,
     private camera: Camera,
     private file: File,
-    private webview: WebView
+    private webview: WebView,
+    private global: GlobalService
   ) {
     setTimeout(() => {
       this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
     }, 1000);
+    this.global.getObservable().subscribe((data) => {
+      console.log('Data received', data);
+    });
   }
 
-  async presentModal() {
+  /* async presentModal() {
     const modal = await this.navCtrl.navigateForward("/home")
     // ({
     //   component: SettingsPage,
@@ -63,6 +69,13 @@ export class KaleidoscopePage {
     //   const settings = data["settings"]; // Here's your selected user!
     // });
     // return await modal.present();
+  } */
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: SettingsPage
+    });
+    return await modal.present();
   }
 
   refreshApp = () => {
