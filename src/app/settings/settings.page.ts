@@ -21,7 +21,7 @@ export class SettingsPage implements OnInit {
     private file: File,
     private webview: WebView
   ) {
-    
+
   }
 
   @Input() mandala;
@@ -37,7 +37,7 @@ export class SettingsPage implements OnInit {
   public currentImage = "assets/img/effect3.jpeg";
 
   ngOnInit() {
-    console.log('this.currentAnimate',this.animate)
+    console.log('this.currentAnimate', this.animate)
     this.currentMandala = this.mandala;
     this.currentAnimate = this.animate;
     this.currentSpeed = this.speed;
@@ -45,13 +45,19 @@ export class SettingsPage implements OnInit {
     this.currentSegment = this.segment;
   }
 
-  changeAutoAnimate=()=>{
-    this.currentAnimate=!this.currentAnimate;
-    console.log(this.currentAnimate)
+  changeAutoAnimate = () => {
+    console.log('animate change');
+    console.log(this.currentAnimate);
   }
+
+  changeMandela = () => {
+    console.log('animate mandela');
+    console.log(this.currentMandala);
+  }
+
   save = () => {
     console.log("closing");
-    console.log('this.currentMandala',this.currentMandala)
+    console.log('this.currentMandala', this.currentMandala)
     this.global.publishData({
       mandala: this.currentMandala,
       autoAnimate: this.currentAnimate,
@@ -82,7 +88,7 @@ export class SettingsPage implements OnInit {
           });
       },
       (err) => {
-        // Handle error
+        console.log(err);
       }
     );
   }

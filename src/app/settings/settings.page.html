@@ -8,29 +8,15 @@
   <form>
     <ion-item>
       <ion-label>Mandala View</ion-label>
-      <ion-toggle
-        (click)="currentMandala=!currentMandala"
-        name="currentMandala"
-        checked="currentMandala"
-      ></ion-toggle>
+      <ion-toggle (click)="changeMandela()" name="currentMandala" [(ngModel)]="currentMandala"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Auto animation</ion-label>
-      <ion-toggle
-        (click)="changeAutoAnimate()"
-        name="currentAnimate"
-        checked="currentAnimate"
-      ></ion-toggle>
+      <ion-toggle (click)="changeAutoAnimate()" name="currentAnimate" [(ngModel)]="currentAnimate"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Speed</ion-label>
-      <ion-range
-        name="currentSpeed"
-        min="1"
-        max="10"
-        pin="true"
-        [(ngModel)]="currentSpeed"
-      >
+      <ion-range name="currentSpeed" min="1" max="10" pin="true" [(ngModel)]="currentSpeed">
         <ion-icon size="small" slot="start" name="sunny"></ion-icon>
         <ion-icon slot="end" name="sunny"></ion-icon>
       </ion-range>
@@ -64,8 +50,6 @@
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-button (click)="save()" expand="full" color="primary"
-      >Submit</ion-button
-    >
+    <ion-button (click)="save()" expand="full" color="primary">Submit</ion-button>
   </form>
 </ion-content>
