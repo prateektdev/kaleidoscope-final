@@ -36,7 +36,13 @@ export class KaleidoscopePage {
     private global: GlobalService
   ) {
     setTimeout(() => {
-      this.loadView(this.mandala, this.autoAnimate, this.currentImage,this.currentSegment,this.currentSpeed);
+      this.loadView(
+        this.mandala,
+        this.autoAnimate,
+        this.currentImage,
+        this.currentSegment,
+        this.currentSpeed
+      );
     }, 1000);
     this.global.getObservable().subscribe((data) => {
       console.log("data : ", data);
@@ -47,7 +53,13 @@ export class KaleidoscopePage {
       this.currentSegment = data.currentSegment;
       this.refreshApp();
       setTimeout(() => {
-        this.loadView(this.mandala, this.autoAnimate, this.currentImage,this.currentSegment,this.currentSpeed);
+        this.loadView(
+          this.mandala,
+          this.autoAnimate,
+          this.currentImage,
+          this.currentSegment,
+          this.currentSpeed
+        );
       }, 1000);
     });
   }
@@ -67,10 +79,18 @@ export class KaleidoscopePage {
   }
 
   refreshApp = () => {
-    $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
+    $(".kaleidoscope").html('');
+    $(".scopearea").html('<div class="scopearea"><div class="kaleidoscope"></div></div>');
+   
   };
 
-  loadView = (mandala, autoAnimate, currentImage,currentSegment,currentSpeed) => {
+  loadView = (
+    mandala,
+    autoAnimate,
+    currentImage,
+    currentSegment,
+    currentSpeed
+  ) => {
     $(document).ready(function () {
       var parameters: any = (function (src) {
         var params = {},
@@ -187,40 +207,43 @@ export class KaleidoscopePage {
       //   move( nx, ny );
       //   auto = auto_throttle = false;
       // });
-      $kaleidescope.bind("mousemove touchmove", function (e: any) {
-        x++;
-        y++;
-        var nx: any = e.pageX,
-          ny: any = e.pageY;
-        let touch = undefined;
-        if (e.originalEvent.touches) touch = e.originalEvent.touches[0];
-        nx = e.pageX || touch.pageX;
-        ny = e.pageY || touch.pageY;
-        switch (mode) {
-          case 1:
-            nx = -x;
-            ny = e.pageY;
-            break;
-          case 2:
-            nx = e.pageX || touch.pageX;
-            ny = -y;
-            break;
-          case 3:
-            nx = x;
-            ny = e.pageY;
-            break;
-          case 4:
-            nx = e.pageX;
-            ny = y;
-            break;
-          case 5:
-            nx = x;
-            ny = y;
-            break;
-        }
-        move(parseInt(nx), parseInt(ny));
-        auto = auto_throttle = false;
-      });
+      if (!autoAnimate) {
+        $kaleidescope.bind("mousemove touchmove", function (e: any) {
+          x++;
+          y++;
+          var nx: any = e.pageX,
+            ny: any = e.pageY;
+          let touch = undefined;
+          if (e.originalEvent.touches) touch = e.originalEvent.touches[0];
+          nx = e.pageX || touch.pageX;
+          ny = e.pageY || touch.pageY;
+          switch (mode) {
+            case 1:
+              nx = -x;
+              ny = e.pageY;
+              break;
+            case 2:
+              nx = e.pageX || touch.pageX;
+              ny = -y;
+              break;
+            case 3:
+              nx = x;
+              ny = e.pageY;
+              break;
+            case 4:
+              nx = e.pageX;
+              ny = y;
+              break;
+            case 5:
+              nx = x;
+              ny = y;
+              break;
+          }
+          move(parseInt(nx), parseInt(ny));
+          auto = auto_throttle = false;
+        });
+      }
+
       // An alternate image can be supplied via Dragon Drop.
       // if ( 'draggable' in document.createElement('b') && window.FileReader ) {
       //   k.ondragenter = k.ondragover = function( e ) {

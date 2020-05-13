@@ -72,8 +72,10 @@ export class SettingsPage implements OnInit {
     const options: CameraOptions = {
       quality: 100,
       sourceType: sourceType,
+      targetWidth:300,
+      targetHeight:150,
       destinationType: this.camera.DestinationType.FILE_URI,
-      encodingType: this.camera.EncodingType.JPEG,
+      encodingType: this.camera.EncodingType.PNG,
       mediaType: this.camera.MediaType.PICTURE,
     };
     this.camera.getPicture(options).then(
