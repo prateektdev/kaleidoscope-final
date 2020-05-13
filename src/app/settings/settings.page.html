@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Kaleidoscope-Under dev</ion-title>
+    <ion-title>Kaleidoscope-Settings</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -8,26 +8,36 @@
   <form>
     <ion-item>
       <ion-label>Mandala View</ion-label>
-      <ion-toggle (click)="mandala=!mandala" name="mandala"></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label>Full screen View</ion-label>
-      <ion-toggle (click)="fullscreen=!fullscreen" name="fullscreen"></ion-toggle>
+      <ion-toggle
+        (click)="currentMandala=!currentMandala"
+        name="currentMandala"
+        checked="currentMandala"
+      ></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Auto animation</ion-label>
-      <ion-toggle (click)="animate=!animate" name="animate"></ion-toggle>
+      <ion-toggle
+        (click)="changeAutoAnimate()"
+        name="currentAnimate"
+        checked="currentAnimate"
+      ></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>Speed</ion-label>
-      <ion-range name="speed" min="1" max="100" min="1" max="100" pin="true" [(ngModel)]="speed">
+      <ion-range
+        name="currentSpeed"
+        min="1"
+        max="10"
+        pin="true"
+        [(ngModel)]="currentSpeed"
+      >
         <ion-icon size="small" slot="start" name="sunny"></ion-icon>
         <ion-icon slot="end" name="sunny"></ion-icon>
       </ion-range>
     </ion-item>
     <ion-item>
       <ion-label>Image</ion-label>
-      <ion-button (click)="save()" color="primary">
+      <ion-button (click)="selectImage()" color="primary">
         <ion-icon size="small" slot="start" name="sunny"></ion-icon> Select
         Image
       </ion-button>
@@ -36,24 +46,26 @@
       <ion-label>Segments</ion-label>
       <ion-grid>
         <ion-row class="ion-align-items-center">
-          <ion-col size="4" class="ion-align-self-center">
-            <ion-button color="medium" fill="clear" (click)="increaseSegment()">
+          <ion-col size="5" class="ion-align-self-center">
+            <ion-button color="medium" fill="clear" (click)="decreaseSegment()">
               <ion-icon name="remove-circle" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-col>
 
-          <ion-col size="2" class="ion-align-self-center">
-            {{ "1" }}
+          <ion-col size="4" class="ion-align-self-center">
+            {{ currentSegment }}
           </ion-col>
 
           <ion-col size="2" class="ion-align-self-center">
-            <ion-button color="medium" fill="clear" (click)="decreaseSegment()">
+            <ion-button color="medium" fill="clear" (click)="increaseSegment()">
               <ion-icon name="add-circle" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-button (click)="save()" expand="full" color="primary">Submit</ion-button>
+    <ion-button (click)="save()" expand="full" color="primary"
+      >Submit</ion-button
+    >
   </form>
 </ion-content>

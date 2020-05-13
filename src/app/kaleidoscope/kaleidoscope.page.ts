@@ -1,23 +1,14 @@
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
-  AlertController,
   LoadingController,
   ToastController,
   ModalController,
-  NavController,
-  ActionSheetController,
 } from "@ionic/angular";
-import { FileChooser } from "@ionic-native/file-chooser/ngx";
-import { Storage } from "@ionic/storage";
 import * as $ from "jquery";
 import { SettingsPage } from "../settings/settings.page";
-import { Camera, CameraOptions } from "@ionic-native/camera/ngx";
-import { File, FileEntry } from "@ionic-native/file/ngx";
-import { Capacitor } from '@capacitor/core';
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { HomePage } from '../home/home.page';
-import { GlobalService } from '../service/global.service';
+import { Capacitor } from "@capacitor/core";
+import { GlobalService } from "../service/global.service";
 
 interface Window {
   requestAnimationFrame: any;
@@ -31,49 +22,46 @@ var window: Window;
   styleUrls: ["kaleidoscope.page.scss"],
 })
 export class KaleidoscopePage {
-  fullDisplay: boolean = false;
-  autoAnimate: boolean = false;
+  mandala: boolean = true;
+  autoAnimate: boolean = true;
   currentSpeed: number = 3;
-  currentSegment: number = 3;
-  currentImage: string = "assets/img/effect9.jpeg";
+  currentSegment: number = 7;
+  currentImage: string = "assets/img/effect3.jpeg";
 
   constructor(
     public http: HttpClient,
     public modalController: ModalController,
-    public actionSheetCtrl: ActionSheetController,
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
-    private fileChooser: FileChooser,
-    private navCtrl: NavController,
-    private storage: Storage,
-    private camera: Camera,
-    private file: File,
-    private webview: WebView,
     private global: GlobalService
   ) {
     setTimeout(() => {
-      this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
+      this.loadView(this.mandala, this.autoAnimate, this.currentImage);
     }, 1000);
     this.global.getObservable().subscribe((data) => {
-      console.log('Data received', data);
+      console.log("data : ", data);
+      this.mandala = data.mandala;
+      this.autoAnimate = data.autoAnimate;
+      this.currentImage = data.currentImage;
+      this.currentSpeed = data.currentSpeed;
+      this.currentSegment = data.currentSegment;
+      this.refreshApp();
+      setTimeout(() => {
+        this.loadView(this.mandala, this.autoAnimate, this.currentImage);
+      }, 1000);
     });
   }
 
-  /* async presentModal() {
-    const modal = await this.navCtrl.navigateForward("/home")
-    // ({
-    //   component: SettingsPage,
-    // });
-    // modal.onDidDismiss().then((data) => {
-    //   console.log("here : ", data);
-    //   const settings = data["settings"]; // Here's your selected user!
-    // });
-    // return await modal.present();
-  } */
-
   async presentModal() {
     const modal = await this.modalController.create({
-      component: SettingsPage
+      component: SettingsPage,
+      componentProps: {
+        mandala: this.mandala,
+        animate: this.autoAnimate,
+        speed: this.currentSpeed,
+        image: this.currentImage,
+        segment: this.currentSegment,
+      },
     });
     return await modal.present();
   }
@@ -82,161 +70,7 @@ export class KaleidoscopePage {
     $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
   };
 
-  showInFullScreen = (fullScreenEnable: boolean) => {
-    this.refreshApp();
-    setTimeout(() => {
-      this.fullDisplay = fullScreenEnable;
-      this.loadView(fullScreenEnable, this.autoAnimate, this.currentImage);
-    }, 1000);
-  };
-
-  enableAutoAnimation = (autoEnable: boolean) => {
-    this.refreshApp();
-    setTimeout(() => {
-      this.autoAnimate = autoEnable;
-      this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
-    }, 1000);
-  };
-
-  chaneSpeed = (speed: number) => {
-    this.refreshApp();
-    setTimeout(() => {
-      this.currentSpeed = speed;
-      this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
-    }, 1000);
-  };
-
-  changeImage = () => {
-    this.refreshApp();
-    setTimeout(() => {
-      // this.fileChooser
-      //   .open()
-      //   .then(async (uri) => {
-      //     console.log(uri);
-      //     // let alert = await this.toastCtrl.create({
-      //     //   message: "URI : "+uri,
-      //     //   duration: 3000,
-      //     //   position: "top",
-      //     // });
-      //     // alert.present();
-      //     if (uri.substring(0, 21) == "content://com.android") {
-      //       let photo_split = uri.split("%3A");
-      //       uri = "content://media/external/images/media/" + photo_split[1];
-      //     }
-      //     this.currentImage = "data:image/jpeg;base64," + uri;
-      //     console.log(this.currentImage);
-      //     this.loadView(this.fullDisplay, this.autoAnimate, this.currentImage);
-      //   })
-      //   .catch((e) => console.log(e));
-      this.selectImage();
-    }, 1000);
-  };
-
-  async presentActionSheet() {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: "View",
-      buttons: [
-        {
-          text: "Mandala",
-          role: "destructive",
-          icon: "heart",
-          handler: () => {
-            this.showInFullScreen(false);
-          },
-        },
-        {
-          text: "Full screen",
-          icon: "share",
-          handler: () => {
-            this.showInFullScreen(true);
-          },
-        },
-        {
-          text: "Auto Animation",
-          icon: "aperture-outline",
-          handler: () => {
-            this.enableAutoAnimation(true);
-          },
-        },
-        {
-          text: "Finger Animate",
-          icon: "finger-print-outline",
-          handler: () => {
-            this.enableAutoAnimation(false);
-          },
-        },
-        {
-          text: "Change Image",
-          icon: "image-outline",
-          handler: () => {
-            this.changeImage();
-          },
-        },
-      ],
-    });
-    actionSheet.present();
-  }
-
-  pickImage(sourceType) {
-    const options: CameraOptions = {
-      quality: 100,
-      sourceType: sourceType,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-    };
-    this.camera.getPicture(options).then(
-      (imageData) => {
-        // imageData is either a base64 encoded string or a file URI
-        // If it's base64 (DATA_URL):
-        // let base64Image = 'data:image/jpeg;base64,' + imageData;
-        // this.cropImage(imageData);
-        this.file
-          .resolveLocalFilesystemUrl(imageData)
-          .then((entry: FileEntry) => {
-            entry.file((file) => {
-              console.log(file);
-              this.currentImage = this.webview.convertFileSrc(imageData);
-              console.log(this.currentImage);
-              this.loadView(
-                this.fullDisplay,
-                this.autoAnimate,
-                this.currentImage
-              );
-            });
-          });
-      },
-      (err) => {
-        // Handle error
-      }
-    );
-  }
-  async selectImage() {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: "Select Image source",
-      buttons: [
-        {
-          text: "Load from Library",
-          handler: () => {
-            this.pickImage(this.camera.PictureSourceType.PHOTOLIBRARY);
-          },
-        },
-        {
-          text: "Use Camera",
-          handler: () => {
-            this.pickImage(this.camera.PictureSourceType.CAMERA);
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ],
-    });
-    await actionSheet.present();
-  }
-
-  loadView = (fullDisplay, autoAnimate, currentImage) => {
+  loadView = (mandala, autoAnimate, currentImage) => {
     $(document).ready(function () {
       var parameters: any = (function (src) {
         var params = {},
@@ -266,8 +100,7 @@ export class KaleidoscopePage {
       var n = ~~parameters.n || 7;
       var tiles = "";
       if (n) {
-        console.log("this.fullDisplay : ", fullDisplay);
-        if (fullDisplay == true) {
+        if (mandala == false) {
           for (var i = 0; i <= n * 2; i++) {
             tiles += [
               `<div class="tile-full tile t`,
