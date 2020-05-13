@@ -36,7 +36,7 @@ export class KaleidoscopePage {
     private global: GlobalService
   ) {
     setTimeout(() => {
-      this.loadView(this.mandala, this.autoAnimate, this.currentImage);
+      this.loadView(this.mandala, this.autoAnimate, this.currentImage,this.currentSegment,this.currentSpeed);
     }, 1000);
     this.global.getObservable().subscribe((data) => {
       console.log("data : ", data);
@@ -47,7 +47,7 @@ export class KaleidoscopePage {
       this.currentSegment = data.currentSegment;
       this.refreshApp();
       setTimeout(() => {
-        this.loadView(this.mandala, this.autoAnimate, this.currentImage);
+        this.loadView(this.mandala, this.autoAnimate, this.currentImage,this.currentSegment,this.currentSpeed);
       }, 1000);
     });
   }
@@ -70,7 +70,7 @@ export class KaleidoscopePage {
     $(".kaleidoscope").html('<div class="kaleidoscope"></div>');
   };
 
-  loadView = (mandala, autoAnimate, currentImage) => {
+  loadView = (mandala, autoAnimate, currentImage,currentSegment,currentSpeed) => {
     $(document).ready(function () {
       var parameters: any = (function (src) {
         var params = {},
@@ -94,10 +94,10 @@ export class KaleidoscopePage {
       var auto_throttle;
 
       // PARAMETER: *s* is the speed of the automatic timeout animation.
-      var s = parameters.s || 1;
+      var s = parameters.s || currentSpeed;
 
       // PARAMETER: *n* is the number of segments.
-      var n = ~~parameters.n || 7;
+      var n = ~~parameters.n || currentSegment;
       var tiles = "";
       if (n) {
         if (mandala == false) {
