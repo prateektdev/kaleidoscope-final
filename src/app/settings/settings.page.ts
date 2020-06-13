@@ -24,16 +24,16 @@ export class SettingsPage implements OnInit {
 
   }
 
-  @Input() mandala;
-  @Input() animate;
-  @Input() speed;
-  @Input() image;
-  @Input() segment;
+  @Input() mandala: any;
+  @Input() animate: any;
+  @Input() speed: any;
+  @Input() image: any;
+  @Input() segment: any;
 
-  public currentMandala;
-  public currentAnimate;
-  public currentSpeed;
-  public currentSegment;
+  public currentMandala: any;
+  public currentAnimate: any;
+  public currentSpeed: any;
+  public currentSegment: number;
   public currentImage = "assets/img/effect3.jpeg";
 
   ngOnInit() {
@@ -68,12 +68,16 @@ export class SettingsPage implements OnInit {
     this.modalController.dismiss();
   };
 
+  closeModal = () => {
+    this.modalController.dismiss();
+  }
+
   pickImage(sourceType) {
     const options: CameraOptions = {
       quality: 100,
       sourceType: sourceType,
-      targetWidth:300,
-      targetHeight:150,
+      targetWidth: 300,
+      targetHeight: 150,
       destinationType: this.camera.DestinationType.FILE_URI,
       encodingType: this.camera.EncodingType.PNG,
       mediaType: this.camera.MediaType.PICTURE,
@@ -119,11 +123,12 @@ export class SettingsPage implements OnInit {
     });
     await actionSheet.present();
   }
+
   increaseSegment = () => {
-    if (this.currentSegment != 17) this.currentSegment += 2;
+    if (this.currentSegment != 23) this.currentSegment += 2;
   };
 
   decreaseSegment = () => {
-    if (this.currentSegment != 7) this.currentSegment -= 2;
+    if (this.currentSegment != 9) this.currentSegment -= 2;
   };
 }

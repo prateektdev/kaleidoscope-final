@@ -17,6 +17,7 @@ import { Camera } from "@ionic-native/camera/ngx";
 import { File } from "@ionic-native/file/ngx";
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { FormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [AppComponent, SettingsPage, HomePage],
   entryComponents: [HomePage, SettingsPage],
@@ -26,7 +27,7 @@ import { FormsModule } from '@angular/forms';
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
     AppRoutingModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [
     StatusBar,
@@ -35,7 +36,7 @@ import { FormsModule } from '@angular/forms';
     Camera,
     File,
     WebView,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent],
 })

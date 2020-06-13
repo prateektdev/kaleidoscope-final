@@ -1,9 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   LoadingController,
   ToastController,
-  ModalController,
+  ModalController
 } from "@ionic/angular";
 import * as $ from "jquery";
 import { SettingsPage } from "../settings/settings.page";
@@ -15,17 +15,20 @@ interface Window {
   FileReader: any;
   setTimeout: any;
 }
+
 var window: Window;
+
 @Component({
   selector: "app-kaleidoscope",
   templateUrl: "kaleidoscope.page.html",
   styleUrls: ["kaleidoscope.page.scss"],
 })
+
 export class KaleidoscopePage {
   mandala: boolean = true;
   autoAnimate: boolean = true;
   currentSpeed: number = 3;
-  currentSegment: number = 7;
+  currentSegment: number = 9;
   currentImage: string = "assets/img/effect3.jpeg";
 
   constructor(
@@ -78,10 +81,14 @@ export class KaleidoscopePage {
     return await modal.present();
   }
 
+  openModel($event: object) {
+    console.log($event)
+    this.presentModal();
+  }
+
   refreshApp = () => {
     $(".kaleidoscope").html('');
     $(".scopearea").html('<div class="scopearea"><div class="kaleidoscope"></div></div>');
-   
   };
 
   loadView = (

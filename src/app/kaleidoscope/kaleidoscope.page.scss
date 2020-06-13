@@ -4,10 +4,12 @@
   padding: 5%;
   background-color: #111;
 }
+
 ion-content {
   --overflow: hidden;
   background-color: #111;
 }
+
 body {
   margin: 0;
   padding: 0;
@@ -16,14 +18,17 @@ body {
   font-family: sans serif;
   font-size: 10pt;
 }
+
 .optionsButton {
   z-index: 10000;
   position: absolute;
 }
-.kaleidoscope-header{
-  background-color: orange;
-  color: white;
+
+.kaleidoscope-header {
+  // background-color: orange !important;
+  color: white !important;
 }
+
 .kaleidoscope {
   width: 100%;
   height: 100%;
@@ -8928,25 +8933,25 @@ nav a {
   text-decoration: none;
 }
 
-nav > * {
+nav>* {
   float: left;
   padding: 0.6em;
   background-color: #eee;
   opacity: 0.8;
 }
 
-nav > *:hover {
+nav>*:hover {
   opacity: 0.9;
 }
 
-nav > *:nth-child(n + 2) {
+nav>*:nth-child(n + 2) {
   border-left: 1px solid #666;
 }
 
-nav > *:first-child {
+nav>*:first-child {
   border-bottom-left-radius: 0.6em;
 }
 
-nav > *:last-child {
+nav>*:last-child {
   border-bottom-right-radius: 0.6em;
 }
