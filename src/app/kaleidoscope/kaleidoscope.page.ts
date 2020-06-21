@@ -1,9 +1,9 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild, Inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {
   LoadingController,
   ToastController,
-  ModalController
+  ModalController,
 } from "@ionic/angular";
 import * as $ from "jquery";
 import { SettingsPage } from "../settings/settings.page";
@@ -23,20 +23,20 @@ var window: Window;
   templateUrl: "kaleidoscope.page.html",
   styleUrls: ["kaleidoscope.page.scss"],
 })
-
 export class KaleidoscopePage {
   mandala: boolean = true;
   autoAnimate: boolean = true;
   currentSpeed: number = 3;
   currentSegment: number = 9;
-  currentImage: string = "assets/img/effect3.jpeg";
+  currentImage: string = "assets/img/effect12.jpeg";
 
   constructor(
     public http: HttpClient,
     public modalController: ModalController,
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
-    private global: GlobalService
+    private global: GlobalService,
+    @Inject("Window") private window: Window
   ) {
     setTimeout(() => {
       this.loadView(
@@ -44,7 +44,8 @@ export class KaleidoscopePage {
         this.autoAnimate,
         this.currentImage,
         this.currentSegment,
-        this.currentSpeed
+        this.currentSpeed,
+        this.window
       );
     }, 1000);
     this.global.getObservable().subscribe((data) => {
@@ -61,7 +62,8 @@ export class KaleidoscopePage {
           this.autoAnimate,
           this.currentImage,
           this.currentSegment,
-          this.currentSpeed
+          this.currentSpeed,
+          this.window
         );
       }, 250);
     });
@@ -82,13 +84,15 @@ export class KaleidoscopePage {
   }
 
   openModel($event: object) {
-    console.log($event)
+    console.log($event);
     this.presentModal();
   }
 
   refreshApp = () => {
-    $(".kaleidoscope").html('');
-    $(".scopearea").html('<div class="scopearea"><div class="kaleidoscope"></div></div>');
+    $(".kaleidoscope").html("");
+    $(".scopearea").html(
+      '<div class="scopearea"><div class="kaleidoscope"></div></div>'
+    );
   };
 
   loadView = (
@@ -96,7 +100,8 @@ export class KaleidoscopePage {
     autoAnimate,
     currentImage,
     currentSegment,
-    currentSpeed
+    currentSpeed,
+    window
   ) => {
     $(document).ready(function () {
       var parameters: any = (function (src) {
@@ -252,29 +257,32 @@ export class KaleidoscopePage {
       }
 
       // An alternate image can be supplied via Dragon Drop.
-      // if ( 'draggable' in document.createElement('b') && window.FileReader ) {
-      //   k.ondragenter = k.ondragover = function( e ) {
-      //     e.preventDefault();
-      //   };
+      if ("draggable" in document.createElement("b") && window.FileReader) {
+        k.ondragenter = k.ondragover = function (e) {
+          e.preventDefault();
+        };
 
-      //   k.ondrop = function( e ) {
-      //     readFile( e.dataTransfer.files[0] );
-      //     e.preventDefault();
-      //   };
-      // }
+        k.ondrop = function (e) {
+          readFile(e.dataTransfer.files[0]);
+          e.preventDefault();
+        };
+      }
 
-      // function readFile( file ) {
-      //   var r = new FileReader();
-      //   if ( !file.type.match('image\/.*') ) {
-      //     return false;
-      //   }
+      function readFile(file) {
+        var r = new FileReader();
+        if (!file.type.match("image/.*")) {
+          return false;
+        }
 
-      //   r.onload = function( e:any ) {
-      //     $image.css( 'background-image', [ 'url(', e.target.result, ')' ].join( '' ) );
-      //   };
+        r.onload = function (e: any) {
+          $image.css(
+            "background-image",
+            ["url(", e.target.result, ")"].join("")
+          );
+        };
 
-      //   r.readAsDataURL( file );
-      // }
+        r.readAsDataURL(file);
+      }
 
       // Request Fullscreen for maximum LSD effect
       $fullscreen.click(function () {
@@ -290,27 +298,29 @@ export class KaleidoscopePage {
       });
 
       // Animate all the things!
-      // window.requestAnimationFrame = ( function( window ) {
-      //   console.log('window',window)
-      //   var suffix = "equestAnimationFrame",
-      //     rAF = [ "r" ].filter( function( val ) {
-      //       return val + suffix in window;
-      //     })[ 0 ] + suffix;
+      window.requestAnimationFrame = (function (window) {
+        var suffix = "equestAnimationFrame",
+          rAF =
+            ["r"].filter(function (val) {
+              return val + suffix in window;
+            })[0] + suffix;
 
-      //   return window[ rAF ]  || function( callback ) {
-      //     window.setTimeout( function() {
-      //       callback( +new Date() );
-      //     }, 100 / 60 );
-      //   };
-      // })( window );
+        // return window[ rAF ]  || function( callback ) {
+        return function (callback) {
+          window.setTimeout(function () {
+            callback(+new Date());
+          }, 100 / currentSpeed);
+        };
+      })(window);
 
       function animate() {
         const a: any = [".0000", s].join("");
+
         var time = new Date().getTime() * a;
         auto_x = Math.sin(time) * document.body.clientWidth;
         auto_y++;
         move(auto_x, auto_y);
-        if (auto) window.requestAnimationFrame(animate);
+        if (autoAnimate) window.requestAnimationFrame(animate);
       }
 
       function move(x, y) {
@@ -318,17 +328,17 @@ export class KaleidoscopePage {
       }
 
       // Timer to check for inactivity
-      (function timer() {
-        setTimeout(function () {
-          timer();
-          if (autoAnimate) {
-            animate();
-            auto_throttle = true;
-          } else {
-            auto = true;
-          }
-        }, 100);
-      })();
+      // (function timer() {
+      //   setTimeout(function () {
+      //     timer();
+      //     if (autoAnimate) {
+      animate();
+      //     auto_throttle = true;
+      //   } else {
+      //     auto = true;
+      //   }
+      // },120);
+      // })();
     });
   };
 }

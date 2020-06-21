@@ -10,13 +10,13 @@ import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule } from "@angular/common/http";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app-routing.module";
-import { HomePage } from './home/home.page'
+import { HomePage } from "./home/home.page";
 import { SettingsPage } from "./settings/settings.page";
 import { FileChooser } from "@ionic-native/file-chooser/ngx";
 import { Camera } from "@ionic-native/camera/ngx";
 import { File } from "@ionic-native/file/ngx";
-import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { FormsModule } from '@angular/forms';
+import { WebView } from "@ionic-native/ionic-webview/ngx";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [AppComponent, SettingsPage, HomePage],
@@ -36,8 +36,9 @@ import { FormsModule } from '@angular/forms';
     Camera,
     File,
     WebView,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: "Window", useValue: window },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
