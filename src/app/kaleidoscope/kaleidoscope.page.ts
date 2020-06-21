@@ -63,7 +63,7 @@ export class KaleidoscopePage {
           this.currentSegment,
           this.currentSpeed
         );
-      }, 1000);
+      }, 250);
     });
   }
 

@@ -1,6 +1,10 @@
 ion-toolbar {
   --color: #ffffff;
-  --background: #0d2c6c;
+  --background: #2d3035;
+}
+
+.md.button.ion-activatable.ion-focusable.hydrated {
+  color: white;
 }
 
 body {

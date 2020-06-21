@@ -10,6 +10,11 @@ ion-content {
   background-color: #111;
 }
 
+.menuBtn{
+  position:absolute;
+  z-index:99
+}
+
 body {
   margin: 0;
   padding: 0;

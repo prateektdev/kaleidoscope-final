@@ -55,8 +55,7 @@ export class SettingsPage implements OnInit {
     console.log(this.currentMandala);
   }
 
-  save = () => {
-    console.log("closing");
+  /* save = () => {
     console.log('this.currentMandala', this.currentMandala)
     this.global.publishData({
       mandala: this.currentMandala,
@@ -65,14 +64,21 @@ export class SettingsPage implements OnInit {
       currentImage: this.currentImage,
       currentSegment: this.currentSegment,
     });
-    this.modalController.dismiss();
-  };
+    this.closeModal();
+  } */
 
   closeModal = () => {
+    this.global.publishData({
+      mandala: this.currentMandala,
+      autoAnimate: this.currentAnimate,
+      currentSpeed: this.currentSpeed,
+      currentImage: this.currentImage,
+      currentSegment: this.currentSegment,
+    });
     this.modalController.dismiss();
   }
 
-  pickImage(sourceType) {
+  pickImage(sourceType: any) {
     const options: CameraOptions = {
       quality: 100,
       sourceType: sourceType,
@@ -131,4 +137,8 @@ export class SettingsPage implements OnInit {
   decreaseSegment = () => {
     if (this.currentSegment != 9) this.currentSegment -= 2;
   };
+
+  ionViewWillLeave() {
+    this.closeModal();
+  }
 }
